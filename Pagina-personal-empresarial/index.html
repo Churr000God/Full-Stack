@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <!-- Metadatos básicos -->
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="Página personal de Diego Guillen">
+            <title>Página Personal Empresarial</title>
+            <link rel="stylesheet" href="CSS/styles.css">
+        </head>
+
+        <body>
+            <!--Encabezado de la pagina-->
+            <header class="site-header">
+                <section class="Hero-header">
+                    <div class="Hero-header-container">
+                        <span class="Hero-badge">Innovación & Tecnología</span>
+                        <h1 class="Hero-header-container-title">
+                            Diego Guillen <span class="highlight">|</span> Soluciones Empresariales
+                        </h1>
+                        <p class="Hero-header-container-description">
+                            Impulsamos tu crecimiento con <strong>desarrollo de software</strong> a medida, <strong>consultoría estratégica</strong> y <strong>optimización de procesos</strong>.
+                        </p>
+                        <div class="Hero-header-actions">
+                            <a href="#contacto" class="btn btn-primary">Empezar Ahora</a>
+                            <a href="#proyectos" class="btn btn-outline">Ver Portafolio</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="Hero-elemnts">
+                    <div class="Hero-elements-container">
+                        <div class="Hero-grid-parent">
+                            <!-- Tarjeta de Visión -->
+                            <div class="Hero-card">
+                                <div class="Hero-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                </div>
+                                <h3 class="Hero-card-title">Nuestra Visión</h3>
+                                <p class="Hero-card-text">
+                                    Ser el socio estratégico referente en innovación tecnológica, transformando negocios mediante soluciones digitales escalables y sostenibles.
+                                </p>
+                            </div>
+                            <!-- Tarjeta de Valores -->
+                            <div class="Hero-card">
+                                <div class="Hero-card-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                </div>
+                                <h3 class="Hero-card-title">Nuestros Valores</h3>
+                                <p class="Hero-card-text">
+                                    Compromiso con la excelencia, integridad en cada línea de código y pasión por crear tecnología que mejore la vida de las personas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </header>
+            <!-- Sección de Proyectos -->
+            <main class="site-main">
+                <section class="projects-section" id="proyectos">
+                    <h2 class="section-title">Proyectos Destacados</h2>
+                    <div class="projects-grid">
+                        <!-- Proyecto 1 -->
+                        <div class="project-card">
+                            <img src="./assets/images/Cards/card1.jpg" alt="Proyecto 1" class="project-image">
+                            <div class="project-info">
+                                <h3 class="project-title">Sistema de Gestión de Inventarios</h3>
+                                <p class="project-description">Desarrollo de una plataforma web para la gestión eficiente de inventarios en una cadena de supermercados.</p>
+                                <a href="#" class="btn btn-primary">Ver Proyecto</a>
+                            </div>
+                        </div>
+                        <!-- Proyecto 2 -->
+                        <div class="project-card">
+                            <img src="./assets/images/Cards/card2.jpg" alt="Proyecto 2" class="project-image">
+                            <div class="project-info">
+                                <h3 class="project-title">Aplicación de Gestión de Proyectos</h3>
+                                <p class="project-description">Desarrollo de una aplicación móvil para la gestión de proyectos en equipos de desarrollo.</p>
+                                <a href="#" class="btn btn-primary">Ver Proyecto</a>
+                            </div>
+                        </div>
+                        <!-- Proyecto 3 -->
+                        <div class="project-card">
+                            <img src="./assets/images/Cards/card3.jpg" alt="Proyecto 3" class="project-image">
+                            <div class="project-info">
+                                <h3 class="project-title">Sistema de Monitoreo de Redes</h3>
+                                <p class="project-description">Implementación de un sistema para el monitoreo en tiempo real de redes empresariales.</p>
+                                <a href="#" class="btn btn-primary">Ver Proyecto</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="contact-section" id="contacto">
+                    <h2 class="section-title">Contacto</h2>
+                    <div class="contact-container">
+                        <p class="contact-text">¿Interesado en colaborar o simplemente quieres decir hola? ¡No dudes en ponerte en contacto conmigo!</p>
+                        <form class="contact-form" action="#" method="POST">
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Correo electrónico</label>
+                                <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mensaje">Mensaje</label>
+                                <textarea id="mensaje" name="mensaje" rows="5" placeholder="¿En qué puedo ayudarte?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+            <!--FOoTER-->
+            <footer class="site-footer">
+                <div class="footer-content">
+                    <div class="footer-container-1">
+                        <div class="social-links">
+                            <a href="https://linkedin.com" target="_blank" class="social-link" aria-label="LinkedIn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                            </a>
+                            <a href="https://github.com" target="_blank" class="social-link" aria-label="GitHub">
+                                <!-- Si no existe github.svg, podemos usar otro o texto, pero asumo que se quiere estructura similar -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" class="social-link" aria-label="Instagram">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            </a>
+                        </div>
+                        <div class="color-button">
+                            <button id="change-color" class="btn btn-primary">Cambiar Tema</button>
+                        </div>
+                    </div>
+                    <p class="copyright">© 2024 Tu Nombre. Todos los derechos reservados.</p>
+                </div>
+            </footer>
+            <script src="js/script.js"></script>
+        </body>
+    </html>
+<!DOCTYPE html>

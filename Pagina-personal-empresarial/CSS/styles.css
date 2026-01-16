@@ -1,0 +1,643 @@
+/*=== DOCUMENTACIÓN Y GLOSARIO RÁPIDO ===
+ * 
+ * 1. VARIABLES (:root): Permiten definir valores reutilizables. Si cambias el color aquí, se actualiza en toda la web.
+ * 2. POSITION (Posicionamiento):
+ *    - relative: El elemento se posiciona normal, pero sirve de referencia para hijos 'absolute'.
+ *    - absolute: Se mueve libremente dentro del primer padre que tenga 'position: relative'.
+ *    - sticky: Se "pega" al borde de la pantalla al hacer scroll.
+ * 3. Z-INDEX (Capas):
+ *    - Controla qué elemento está encima de otro. Mayor número = más arriba.
+ *    - Solo funciona si el elemento tiene position (relative, absolute, fixed).
+ * 4. FLEXBOX (display: flex):
+ *    - Sistema para alinear elementos en filas o columnas fácilmente.
+ *    - align-items: Alineación vertical (eje secundario).
+ *    - justify-content: Alineación horizontal (eje principal).
+ * 5. UNIDADES MODERNAS:
+ *    - rem: Relativo al tamaño de fuente base (normalmente 16px). Mejor para accesibilidad.
+ *    - vh/vw: % del alto/ancho de la pantalla (Viewport Height/Width).
+ *    - clamp(min, ideal, max): El tamaño cambia fluidamente entre un mínimo y un máximo.
+ * 6. PSEUDO-ELEMENTOS (::before / ::after):
+ *    - Elementos "falsos" creados con CSS para decoración (capas oscuras, iconos) sin ensuciar el HTML.
+ */
+
+/*=== Variables Globales ===*/
+:root {
+    /* Colores de marca */
+    --primary: #6D94C5;       /* Azul principal - Usado en botones y acentos */
+    --secondary: #CBDCEB;     /* Verde secundario - Para detalles o estados de éxito */
+    
+    /* Colores neutros */
+    --dark: #0b1220;          /* Fondo principal oscuro (casi negro azulado) */
+    --light: #e9efff;         /* Texto principal (blanco con toque azulado para reducir fatiga visual) */
+    
+    /* Efectos */
+    /* Degradado oscuro semitransparente para oscurecer imágenes de fondo y mejorar lectura de texto */
+    --gradient-overlay: linear-gradient(135deg, rgba(11, 18, 32, 0.9) 0%, rgba(11, 18, 32, 0.7) 100%);
+    
+    /* Tipografía */
+    /* system-ui usa la fuente nativa del SO (San Francisco en Mac, Segoe UI en Windows) para mejor rendimiento */
+    --font-main: system-ui, -apple-system, sans-serif;
+}
+
+/*=== Tema Claro (Light Mode) ===*/
+body.light-mode {
+    --dark: #F5EFE6;          /* El fondo se vuelve claro */
+    --light: #0b1220;         /* El texto se vuelve oscuro */
+    
+    /*=== Estilo de las Tarjetas (Contenedor individual) ===*/
+    .Hero-card {
+        background: #CBDCEB; /* Fondo casi transparente (3% opacidad) para efecto sutil */
+        border: 3px solid rgb(114, 162, 186); /* Borde fino y semitransparente para definir límites */
+    }
+
+    /* Interacción: Qué pasa cuando pasas el mouse por encima */
+    .Hero-card:hover {
+        background: rgb(255, 255, 255); /* Aumenta opacidad del fondo (8%) para destacar */
+        border-color: rgba(77, 163, 255, 0.3); /* Cambia el borde a azul semitransparente */
+        .Hero-card-title {
+            color: #000000;
+        }
+    }
+
+    /*=== Icono de la Tarjeta ===*/
+    .Hero-card-icon {
+        background: #6D94C5; /* Fondo azul muy suave (10%) */
+        color: #ffffff;        /* Pinta el SVG del color principal (azul) */
+    }
+
+    /*=== Texto de la Tarjeta ===*/
+    .Hero-card-text {
+        font-size: 0.95rem;           /* Ligeramente más pequeño que el estándar (16px) */
+        line-height: 1.6;             /* Altura de línea para mejorar legibilidad de párrafos */
+        color: rgba(0, 0, 0, 0.7); /* Blanco azulado al 70% de opacidad (reduce fatiga visual) */
+    }
+
+
+    .section-title{
+        font-size: 2.5rem;           /* Tamaño de fuente ~40px */
+        font-weight: 700;             /* Negrita fuerte */
+        color: #6D94C5;                  /* Blanco puro para máximo contraste */
+    }
+
+
+    .project-card{
+        background: #CBDCEB; /* Fondo casi transparente (3% opacidad) para efecto sutil */
+        border: 3px solid rgb(114, 162, 186); /* Borde fino y semitransparente para definir límites */
+    }
+
+    .project-title{
+        color: #fff;                  /* Blanco puro para máximo contraste */
+    }
+
+    .project-description{
+        color: rgb(0, 0, 0); /* Blanco azulado al 70% de opacidad (reduce fatiga visual) */
+    }
+
+.contact-text {
+    font-size: 1.1rem; /* Tamaño de fuente ~18px */
+    color: #000000; /* Blanco azulado al 80% de opacidad (reduce fatiga visual) */
+    font-weight: 600; /* Negrita fuerte */
+}
+
+.contact-form {
+    background: #CBDCEB; /* Fondo casi transparente (3% opacidad) para efecto sutil */ 
+}
+
+.placeholders{
+    color: #ffffff; /* Blanco puro para máximo contraste */
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */
+    padding: 1rem; /* Espacio interior para separar el contenido del borde */   
+    background: rgba(11, 18, 32, 0.5); /* Fondo casi transparente (50% opacidad) para efecto sutil */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */
+    border-radius: 8px; /* Bordes redondeados modernos */
+    color: #fff; /* Blanco puro para máximo contraste */
+    font-family: var(--font-main); /* Fuente principal definida en variables */
+    font-size: 1rem; /* Tamaño de fuente ~16px */
+    transition: all 0.3s ease; /* Suaviza cualquier cambio (hover, etc.) durante 0.3 segundos */
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #E8DFCA;
+    color: #0b1220;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #F5EFE6;
+    transform: translateY(-2px);
+}
+
+/*=== Footer ===*/
+.site-footer {
+    background-color: #6D94C5;
+    border-top: 1px solid #3c6aa3; /* Borde fino y semitransparente para definir límites */
+}   
+
+.social-link {
+    background: #F5EFE6; /* Fondo casi transparente (10% opacidad) para efecto sutil */
+    color: #000000; /* Blanco puro para máximo contraste */
+}
+
+.social-link:hover {
+    background: #E8DFCA; /* Color primario definido en variables para resaltar */
+}
+
+.copyright {
+    color: #F5EFE6; /* Color gris claro semi-transparente para contraste */
+}
+}
+
+/*=== Reset básico ===*/
+/* El selector universal (*) selecciona TODOS los elementos */
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box es CRUCIAL. Hace que padding y border se incluyan en el ancho total.
+       Sin esto, un div de 100px + 20px padding mediría 140px. Con esto, mide 100px. */
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--dark);
+    color: var(--light);
+}
+
+/*=== Hero Header (Sección Principal) ===*/
+.Hero-header {
+    /* 'relative' para que los hijos 'absolute' (imagen y overlay) se posicionen respecto a este contenedor */
+    position: relative;
+    width: 100%;
+    /* Ocupa al menos el 85% de la altura de la ventana visible (Viewport Height) */
+    min-height: 85vh;
+    /* Flexbox para centrar perfectamente el contenido hijo (el texto) */
+    display: flex;
+    align-items: center;      /* Centrado Vertical */
+    justify-content: center;  /* Centrado Horizontal */
+    overflow: hidden;         /* Recorta cualquier cosa que se salga del contenedor */
+    padding-top: 4rem;
+}
+
+/*=== Capa 1: Imagen de Fondo ===*/
+/* ::before crea un elemento virtual al inicio del contenedor */
+.Hero-header::before {
+    content: "";              /* Obligatorio para que el pseudo-elemento exista */
+    position: absolute;       /* Se saca del flujo normal para estirarlo sobre el padre */
+    inset: 0;                 /* Atajo moderno para top:0; right:0; bottom:0; left:0 */
+    background-image: url('../assets/images/Header_index/hero_header.jpg');
+    background-size: cover;   /* Escala la imagen para cubrir todo sin deformarse (recorta si es necesario) */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat;
+    z-index: 1;               /* Nivel de capa más bajo */
+}
+
+/*=== Capa 2: Filtro Oscuro (Overlay) ===*/
+/* ::after crea un elemento virtual al final del contenedor */
+.Hero-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-overlay); /* Usa la variable definida arriba */
+    z-index: 2;               /* Nivel medio: Encima de la imagen (1), debajo del texto (3) */
+    backdrop-filter: blur(2px); /* Efecto de vidrio esmerilado sobre lo que hay DETRÁS (la imagen) */
+}
+
+/*=== Capa 3: Contenido (Texto y Botones) ===*/
+.Hero-header-container {
+    position: relative;
+    z-index: 3;               /* Nivel más alto: Asegura que el texto sea seleccionable y visible */
+    max-width: 1000px;        /* Ancho máximo para que no se estire demasiado en pantallas gigantes */
+    padding: 2rem;
+    text-align: center;
+    
+    /* Flex columna para apilar badge, título, descripción y botones verticalmente */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;              /* Espacio automático entre elementos hijos */
+    
+    /* Animación de entrada */
+    animation: fadeInUp 1s ease-out; /* Nombre, duración, función de tiempo (suave al final) */
+}
+
+/*=== Componente: Badge (Etiqueta "Innovación") ===*/
+.Hero-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    /* Fondo semitransparente usando rgba (Red, Green, Blue, Alpha/Opacidad) */
+    background: rgba(77, 163, 255, 0.1);
+    border: 1px solid rgba(77, 163, 255, 0.3);
+    border-radius: 50px;      /* Bordes totalmente redondos (estilo pastilla) */
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;      /* Espacio extra entre letras para legibilidad */
+    margin-bottom: 1rem;
+    backdrop-filter: blur(5px); /* Efecto glassmorphism en el propio badge */
+}
+
+/*=== Tipografía Responsiva ===*/
+.Hero-header-container-title {
+    /* CLAMP: La magia de la tipografía fluida.
+       Mínimo: 2.5rem (móviles)
+       Ideal: 5vw (5% del ancho de pantalla)
+       Máximo: 4.5rem (pantallas grandes) */
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;         /* Altura de línea ajustada para títulos grandes */
+    letter-spacing: -1px;     /* "Kerning" ajustado para que se vea compacto y moderno */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Sombra suave para separar del fondo */
+}
+
+.Hero-header-container-title .highlight {
+    color: var(--primary);
+}
+
+.Hero-header-container-description {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    max-width: 700px;         /* Ancho de lectura cómodo (aprox 75 caracteres por línea) */
+    color: rgba(255, 255, 255, 0.85); /* Blanco al 85% de opacidad para jerarquía visual */
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.Hero-header-container-description strong {
+    color: #fff;              /* Destacar palabras clave en blanco puro */
+    font-weight: 600;
+}
+
+/*=== Botones e Interacción ===*/
+.Hero-header-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;          /* Permite que los botones bajen a otra línea si no caben */
+    justify-content: center;
+}
+
+.btn {
+    display: inline-block;    /* Permite padding y margin */
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;    /* Quita el subrayado de los enlaces */
+    border-radius: 8px;
+    transition: all 0.3s ease; /* Suaviza CUALQUIER cambio de estado (hover, focus) */
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: 2px solid var(--primary);
+    box-shadow: 0 4px 15px rgba(77, 163, 255, 0.4); /* Sombra resplandeciente (glow) */
+}
+
+/* Estado HOVER (al pasar el mouse) */
+.btn-primary:hover {
+    background: #3b82f6;      /* Oscurece ligeramente */
+    border-color: #3b82f6;
+    transform: translateY(-2px); /* Mueve el botón 2px hacia ARRIBA (efecto de elevación) */
+    box-shadow: 0 6px 20px rgba(77, 163, 255, 0.6); /* Sombra más grande e intensa */
+}
+
+/*=== Botón Secundario (Outline/Borde) ===*/
+.btn-outline {
+    background: transparent;          /* Fondo transparente para que se vea la imagen detrás */
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Borde blanco semitransparente (30% visible) */
+    backdrop-filter: blur(5px);       /* Efecto "Glassmorphism": Desenfoca lo que hay DETRÁS del botón */
+}
+
+/* Interacción al pasar el mouse */
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1); /* Añade un fondo blanco muy suave (10%) */
+    border-color: #fff;               /* El borde se vuelve blanco sólido (destaca más) */
+    transform: translateY(-2px);      /* Efecto de elevación */
+}
+
+/*=== Definición de Animaciones ===*/
+@keyframes fadeInUp {
+    from {
+        opacity: 0;           /* Empieza invisible */
+        transform: translateY(30px); /* Empieza 30px más abajo */
+    }
+    to {
+        opacity: 1;           /* Termina visible */
+        transform: translateY(0); /* Termina en su posición original */
+    }
+}
+
+/*=== Media Queries (Diseño Responsivo) ===*/
+/* Reglas que se aplican SOLO si la pantalla es menor a 768px (Tablets/Móviles) */
+@media (max-width: 768px) {
+    .Hero-header {
+        min-height: 70vh;     /* Menos altura en móviles para ver más contenido */
+    }
+    
+    .Hero-header-container {
+        padding: 1rem;
+    }
+    
+    .Hero-header-actions {
+        flex-direction: column; /* Apila los botones verticalmente para facilitar el toque */
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;          /* Botones de ancho completo en móvil */
+        text-align: center;
+    }
+}
+
+/*=== Hero Elements Container ===*/
+.Hero-elements{
+    position: relative; /* Elementos se posicionen respecto al contenedor */
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    min-height: 85vh;/* Ocupa todo el ancho del contenedor almenos el  85% de la ventana visible*/
+    display: flex; /*Centra los elementos vertical y horizontalmente*/
+    justify-content: center; /*Centra los elementos horizontalmente*/
+    align-items: center; /*Centra los elementos verticalmente*/
+    overflow: hidden; /* Oculta cualquier contenido que se salga del contenedor */
+    padding-top: 5rem; /* Espacio superior para separar del borde superior */
+}
+
+.Hero-elements-container{
+    position: relative; /* Elementos se posicionen respecto al contenedor */
+    z-index: 3; /* Nivel más alto: Asegura que el texto sea seleccionable y visible */
+    max-width: 100%;        /* Ancho máximo para que no se estire demasiado en pantallas gigantes */
+    padding: 1rem; /* Espacio interior para separar el contenido del borde */
+    text-align: left;
+
+    /*Animacion de entrada*/
+    animation: fadeInUp 1s ease-out; /* Nombre, duración, función de tiempo (suave al final) */    
+}
+
+/*=== Grid para Tarjetas (Visión y Valores) ===*/
+.Hero-grid-parent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas iguales */
+    gap: 2rem; /* Espacio entre tarjetas */
+    margin-top: 3rem;
+}
+
+/*=== Estilo de las Tarjetas (Contenedor individual) ===*/
+.Hero-card {
+    background: rgba(255, 255, 255, 0.03); /* Fondo casi transparente (3% opacidad) para efecto sutil */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */
+    border-radius: 16px;          /* Bordes redondeados modernos */
+    padding: 1rem;                /* Espacio interno amplio para que el contenido respire */
+    transition: all 0.3s ease;    /* Suaviza cualquier cambio (hover, etc.) durante 0.3 segundos */
+    backdrop-filter: blur(10px);  /* CLAVE: Desenfoca el fondo detrás de la tarjeta (efecto vidrio) */
+    
+    /* Layout interno de la tarjeta */
+    display: flex;                /* Activa Flexbox para organizar hijos */
+    flex-direction: column;       /* Apila los elementos (icono, título, texto) verticalmente */
+    gap: 1rem;                    /* Espacio automático de 1rem (16px) entre cada elemento hijo */
+    text-align: left;             /* Alinea el texto a la izquierda para mejor lectura */
+}
+
+/* Interacción: Qué pasa cuando pasas el mouse por encima */
+.Hero-card:hover {
+    background: rgba(255, 255, 255, 0.08); /* Aumenta opacidad del fondo (8%) para destacar */
+    border-color: rgba(77, 163, 255, 0.3); /* Cambia el borde a azul semitransparente */
+    transform: translateY(-5px);           /* Mueve la tarjeta 5px hacia ARRIBA (efecto levitación) */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra suave y difusa debajo para dar profundidad */
+}
+
+/*=== Icono de la Tarjeta ===*/
+.Hero-card-icon {
+    width: 48px;                  /* Ancho fijo */
+    height: 48px;                 /* Alto fijo (cuadrado) */
+    background: rgba(77, 163, 255, 0.1); /* Fondo azul muy suave (10%) */
+    border-radius: 12px;          /* Bordes ligeramente redondeados */
+    
+    /* Centrado perfecto del icono SVG dentro del cuadrado */
+    display: flex;
+    align-items: center;          /* Centrado Vertical */
+    justify-content: center;      /* Centrado Horizontal */
+    
+    color: var(--primary);        /* Pinta el SVG del color principal (azul) */
+    margin-bottom: 0.5rem;        /* Espacio extra debajo del icono */
+}
+
+/*=== Título de la Tarjeta ===*/
+.Hero-card-title {
+    font-size: 1.25rem;           /* Tamaño de fuente ~20px */
+    font-weight: 700;             /* Negrita fuerte */
+    color: #fff;                  /* Blanco puro para máximo contraste */
+}
+
+/*=== Texto de la Tarjeta ===*/
+.Hero-card-text {
+    font-size: 0.95rem;           /* Ligeramente más pequeño que el estándar (16px) */
+    line-height: 1.6;             /* Altura de línea para mejorar legibilidad de párrafos */
+    color: rgba(233, 239, 255, 0.7); /* Blanco azulado al 70% de opacidad (reduce fatiga visual) */
+}
+
+/*=== Responsive para Grid ===*/
+@media (max-width: 768px) {
+    .Hero-grid-parent {
+        grid-template-columns: 1fr; /* Cambia a UNA sola columna en móviles (apila tarjetas) */
+        gap: 1.5rem;                /* Reduce el espacio entre tarjetas */
+    }
+}
+
+/*=== Sección de Proyectos ===*/
+.projects-section{
+    position: relative; /* Elementos se posicionen respecto al contenedor */
+    z-index: 3; /* Nivel más alto: Asegura que el texto sea seleccionable y visible */
+    max-width: 100%;        /* Ancho máximo para que no se estire demasiado en pantallas gigantes */
+    padding: 1rem; /* Espacio interior para separar el contenido del borde */
+    text-align: left;
+
+    /*Animacion de entrada*/
+    animation: fadeInUp 1s ease-out; /* Nombre, duración, función de tiempo (suave al final) */    
+}
+
+.section-title{
+    font-size: 2.5rem;           /* Tamaño de fuente ~40px */
+    font-weight: 700;             /* Negrita fuerte */
+    color: #fff;                  /* Blanco puro para máximo contraste */
+}
+
+.projects-grid{
+    display: grid; /* Activa Grid Layout */
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas iguales */
+    gap: 2rem; /* Espacio entre tarjetas */
+    margin-top: 3rem; /* Espacio superior para separar de la sección anterior */
+}
+
+.project-card{
+    background: rgba(255, 255, 255, 0.03); /* Fondo casi transparente (3% opacidad) para efecto sutil */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */
+    border-radius: 16px;          /* Bordes redondeados modernos */
+    padding: 1rem;                /* Espacio interno amplio para que el contenido respire */
+    transition: all 0.3s ease;    /* Suaviza cualquier cambio (hover, etc.) durante 0.3 segundos */
+    backdrop-filter: blur(10px);  /* CLAVE: Desenfoca el fondo detrás de la tarjeta (efecto vidrio) */
+}
+
+.project-image{
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */    
+    height: auto; /* Mantiene la proporción original de la imagen */
+    border-radius: 12px; /* Bordes redondeados modernos */
+    display: block; /* Asegura que la imagen no tenga márgenes extra */
+}
+
+.project-info{
+    margin-top: 1rem;
+}
+
+.project-title{
+    font-size: 1.25rem;           /* Tamaño de fuente ~20px */
+    font-weight: 700;             /* Negrita fuerte */
+    color: #fff;                  /* Blanco puro para máximo contraste */
+}
+
+.project-description{
+    font-size: 0.95rem;           /* Ligeramente más pequeño que el estándar (16px) */
+    line-height: 1.6;             /* Altura de línea para mejorar legibilidad de párrafos */
+    color: rgba(233, 239, 255, 0.7); /* Blanco azulado al 70% de opacidad (reduce fatiga visual) */
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr; /* Cambia a UNA sola columna en móviles (apila tarjetas) */
+    }
+}
+
+/*=== Sección de Contacto ===*/
+.contact-section {
+    padding: 4rem 1rem; /* Espacio interior para separar el contenido del borde */
+    max-width: 800px; /* Ancho máximo para centrar el formulario */
+    margin: 0 auto; /* Centra horizontalmente el formulario */
+    text-align: center; /* Centra el texto dentro del formulario */
+}
+
+.contact-text {
+    font-size: 1.1rem; /* Tamaño de fuente ~18px */
+    color: rgba(233, 239, 255, 0.8); /* Blanco azulado al 80% de opacidad (reduce fatiga visual) */
+    margin-bottom: 2rem; /* Espacio extra debajo del párrafo */
+    line-height: 1.6; /* Altura de línea para mejorar legibilidad de párrafos */
+}
+
+.contact-form {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    flex-direction: column; /* Alinea elementos verticalmente (en lugar de horizontalmente) */
+    gap: 1.5rem; /* Espacio entre elementos del formulario */
+    text-align: left; /* Alinea el texto de los elementos del formulario a la izquierda */
+    background: rgba(255, 255, 255, 0.03); /* Fondo casi transparente (3% opacidad) para efecto sutil */ 
+    padding: 2rem; /* Espacio interior para separar el contenido del borde */
+    border-radius: 16px; /* Bordes redondeados modernos */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */    
+    backdrop-filter: blur(10px); /* CLAVE: Desenfoca el fondo detrás del formulario (efecto vidrio) */
+}
+
+.form-group {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    flex-direction: column; /* Alinea elementos verticalmente (en lugar de horizontalmente) */
+    gap: 0.5rem; /* Espacio entre elementos del formulario */
+}
+
+.form-group label {
+    font-weight: 600; /* Negrita fuerte */
+    color: #fff; /* Blanco puro para máximo contraste */
+    font-size: 0.95rem; /* Tamaño de fuente ~16px */
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */
+    padding: 1rem; /* Espacio interior para separar el contenido del borde */   
+    background: rgba(11, 18, 32, 0.5); /* Fondo casi transparente (50% opacidad) para efecto sutil */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */
+    border-radius: 8px; /* Bordes redondeados modernos */
+    color: #fff; /* Blanco puro para máximo contraste */
+    font-family: var(--font-main); /* Fuente principal definida en variables */
+    font-size: 1rem; /* Tamaño de fuente ~16px */
+    transition: all 0.3s ease; /* Suaviza cualquier cambio (hover, etc.) durante 0.3 segundos */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none; /* Elimina el contorno predeterminado al enfocar */
+    border-color: var(--primary); /* Color primario definido en variables para resaltar */  
+    background: rgba(11, 18, 32, 0.8); /* Fondo casi transparente (80% opacidad) para efecto sutil */
+    box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.2); /* Sombra sutil alrededor del elemento enfocado */
+}
+
+.form-group textarea {
+    resize: vertical; /* Permite redimensionar verticalmente solo */
+    min-height: 120px; /* Altura mínima para el área de texto */
+}
+
+/*=== Footer ===*/
+.site-footer {
+    padding: 3rem 1rem; /* Espacio interior para separar el contenido del borde */
+    text-align: center; /* Centra el texto dentro del pie de página */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Borde fino y semitransparente para definir límites */
+    margin-top: 4rem; /* Espacio extra encima del pie de página */
+}
+
+.footer-content {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    flex-direction: column; /* Alinea elementos verticalmente (en lugar de horizontalmente) */  
+    align-items: center; /* Centra elementos verticalmente dentro del contenedor */
+    gap: 1.5rem; /* Espacio entre elementos del pie de página */
+}
+
+.footer-container-1 {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    flex-direction: row; /* Alinea elementos verticalmente (en lugar de horizontalmente) */
+    gap: 1.5rem; /* Espacio entre elementos del pie de página */
+    justify-content: center; /* Centra elementos horizontalmente dentro del contenedor */
+}
+
+.social-links {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    gap: 1.5rem; /* Espacio entre elementos del pie de página */
+    justify-content: center; /* Centra elementos horizontalmente dentro del contenedor */
+}
+
+.social-link {
+    display: flex; /* Activa Flexbox para alinear elementos en una fila */
+    align-items: center; /* Centra elementos verticalmente dentro del contenedor */
+    justify-content: center; /* Centra elementos horizontalmente dentro del contenedor */
+    width: 40px; /* Ancho fijo para mantener la forma circular */
+    height: 40px; /* Alto fijo para mantener la forma circular */
+    border-radius: 50%; /* Bordes redondeados modernos */
+    background: rgba(255, 255, 255, 0.1); /* Fondo casi transparente (10% opacidad) para efecto sutil */
+    color: #fff; /* Blanco puro para máximo contraste */
+    transition: all 0.3s ease; /* Suaviza cualquier cambio (hover, etc.) durante 0.3 segundos */
+}
+
+.social-link img,
+.social-link svg {
+    width: 20px; /* Ancho fijo para mantener la proporción */
+    height: 20px; /* Alto fijo para mantener la proporción */
+    object-fit: contain; /* Asegura que la imagen se ajuste dentro de su contenedor sin distorsionar */
+}
+
+.social-link:hover {
+    background: var(--primary); /* Color primario definido en variables para resaltar */
+    transform: translateY(-3px); /* Efecto de elevar ligeramente al pasar el mouse */
+    box-shadow: 0 5px 15px rgba(77, 163, 255, 0.4); /* Sombra sutil alrededor del elemento al pasar el mouse */
+}
+
+.copyright {
+    color: rgba(233, 239, 255, 0.6); /* Color gris claro semi-transparente para contraste */
+    font-size: 0.9rem; /* Tamaño de fuente ~16px */
+}
