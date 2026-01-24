@@ -1,0 +1,102 @@
+<!DOCTYPE html> <!-- Define el tipo de documento como HTML5 -->
+<html lang="es"> <!-- Elemento raíz, define el idioma de la página como español -->
+<head> <!-- Contiene metadatos y enlaces a recursos externos -->
+    <meta charset="UTF-8"> <!-- Configura la codificación de caracteres a UTF-8 (soporte para tildes y ñ) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Asegura que la página sea responsive en móviles -->
+    <meta name="description" content="Task Collab - Administra tus tareas, mejora tu productividad. Ideal para estudiantes."> <!-- Descripción para SEO -->
+    <title>Task Collab</title> <!-- Título que aparece en la pestaña del navegador -->
+    
+    <!-- Hoja de estilos externa -->
+    <link rel="stylesheet" href="./CSS/style.css">
+    
+    <!-- Script principal de la aplicación (defer asegura que cargue después del HTML) -->
+    <script src="./JS/app.js" defer></script>
+</head>
+<body> <!-- Contenido visible de la página -->
+    
+    <!-- Encabezado principal -->
+    <header>
+        <section class="header_container"> <!-- Contenedor superior con imagen y título -->
+            <div class="header-container-rombo"> <!-- Sección decorativa con fondo de color -->
+                <h1>Task Collab</h1> <!-- Título principal de la app -->
+                <img class="header-icon" src="./ASSETS/Iconos/Icono_palomita.png" alt="Icono de verificación"> <!-- Logo/Icono -->
+            </div>
+            <div class="header_image"> <!-- Contenedor de la imagen hero -->
+                <img src="./ASSETS/Imagenes/hero_image.jpg" alt="Imagen ilustrativa de productividad">
+            </div>
+        </section>
+
+        <!-- Barra de ventajas/características destacadas -->
+        <section class="header-bar" aria-label="Ventajas">
+            <ul class="header-bar-container"> <!-- Lista de ventajas -->
+                <li class="header-bar-adv"> <!-- Item: Administra Tareas -->
+                    <img src="./ASSETS/Iconos/Tareas.png" alt="Icono de tareas" aria-hidden="true">
+                    <p>Administra Tareas</p>
+                </li>
+                <li class="header-bar-adv"> <!-- Item: Productividad -->
+                    <img src="./ASSETS/Iconos/tiempo-restante.png" alt="Icono de tiempo restante" aria-hidden="true">
+                    <p>Mejora tu Productividad</p>
+                </li>
+                <li class="header-bar-adv"> <!-- Item: Estudiantes -->
+                    <img src="./ASSETS/Iconos/sombrero-de-graduacion.png" alt="Icono de graduación" aria-hidden="true">
+                    <p>Ideal para Estudiantes</p>
+                </li>
+            </ul>
+        </section>
+    </header>
+
+    <!-- Contenido principal de la aplicación -->
+    <main class="task">
+        <section class="form-container"> <!-- Contenedor general del gestor de tareas -->
+            
+            <!-- Panel de ingreso de tareas -->
+            <div class="form-container-content">
+                <h2>Registra tus tareas</h2>
+                <form class="form" id="form-tarea" autocomplete="off"> <!-- Formulario para nueva tarea -->
+                    <input type="text" id="nueva-tarea" placeholder="Escribe tu próxima tarea..." required> <!-- Input de texto -->
+                    <button type="submit" class="btn-submit">Agregar</button> <!-- Botón de envío -->
+                </form>
+                <span id="contador">0 tareas</span> <!-- Contador dinámico de tareas -->
+            </div>
+
+            <!-- Contenedor para mensajes de error (accesible) -->
+            <div id="error" class="error" role="alert" aria-live="polite"></div>
+
+            <!-- Contenedor de la lista de tareas y filtros -->
+            <div class="tabla-contenedor">
+                <!-- Barra de filtros de estado -->
+                <div class="Barra-de-filtros" role="group" aria-label="Filtros">
+                    <button id="filtrar-todas" class="filtro" aria-pressed="true">Todas</button>
+                    <button id="filtrar-pendientes" class="filtro" aria-pressed="false">Pendientes</button>
+                    <button id="filtrar-completadas" class="filtro" aria-pressed="false">Completadas</button>
+                </div>
+                
+                <!-- Tabla responsiva para listar tareas -->
+                <div class="table-responsive">
+                    <table class="tabla-tareas">
+                        <thead> <!-- Encabezados de la tabla -->
+                            <tr>
+                                <th>Estado</th>
+                                <th>Tarea</th>
+                                <th>Fecha de Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-tareas"> <!-- Cuerpo de la tabla donde JS inyecta las filas -->
+                            <!-- Las tareas se renderizarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Botón de acción destructiva global -->
+                <button type="button" id="borrar-todo" class="danger">Borrar Todo</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        <!-- Contenido del footer (vacío por ahora) -->
+    </footer>
+</body>
+</html>
