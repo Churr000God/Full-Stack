@@ -58,30 +58,86 @@ class GestorDeTareas { // Definición de la clase principal para gestionar la ap
         this.filtro = 'todas'; // Establece el filtro inicial ('todas', 'pendientes', 'completadas')
         this.storageKey = 'tareas_app_V|1.0.0'; // Define la clave para guardar en LocalStorage
 
+        // Auth Elementos
+        this.$authSection = document.getElementById('auth-section');
+        this.$taskSection = document.getElementById('task-section');
+        this.$authForm = document.getElementById('form-auth');
+        this.$authUsername = document.getElementById('auth-username');
+        this.$authPassword = document.getElementById('auth-password');
+        this.$authTitle = document.getElementById('auth-title');
+        this.$authToggleLink = document.getElementById('auth-toggle-link');
+        this.$authToggleText = document.getElementById('auth-toggle-text');
+        this.$authError = document.getElementById('auth-error');
+        this.$btnLogout = document.getElementById('btn-logout');
+
+        this.isLoginMode = true; // true = login, false = register
+        this.token = localStorage.getItem('jwt_token'); // Recuperar token
+
         // DOM Elementos
         this.$form = document.getElementById("form-tarea"); // Referencia al formulario de agregar tarea
         this.$input = document.getElementById("nueva-tarea"); // Referencia al input de texto para nuevas tareas
         this.$lista = document.getElementById("lista-tareas"); // Referencia a la tabla donde se listan las tareas
         this.$error = document.getElementById("error"); // Referencia al contenedor de mensajes de error
         this.$contador = document.getElementById("contador"); // Referencia al contador de tareas pendientes
-        this.$borrarTodo = document.getElementById("borrar-todo"); // Referencia al botón para borrar todo
+        // this.$borrarTodo = document.getElementById("borrar-todo"); // Desactivado en versión API
         this.$filtros = document.querySelectorAll(".filtro"); // Referencia a los botones de filtro
 
         // Modal Elementos (Eliminados)
         this.idTareaEnEdicion = null; // Inicializa la variable para rastrear qué tarea se edita
 
         // Init
-        this.cargarDesdeLocalStorage(); // Carga las tareas guardadas al iniciar
+        this.verificarSesion(); // Verificar si mostrar login o tareas
         this.configurarEventos(); // Configura los listeners de eventos
-        this.render(); // Renderiza la lista inicial de tareas
+    }
+
+    verificarSesion() {
+        if (this.token) {
+            this.$authSection.style.display = 'none';
+            this.$taskSection.style.display = 'block';
+            this.cargarTareasAPI(); // Cargar tareas desde API
+        } else {
+            this.$authSection.style.display = 'block';
+            this.$taskSection.style.display = 'none';
+        }
     }
 
     // Configuración de Eventos
     configurarEventos() { // Método para agrupar todos los event listeners
+        // Auth Toggle (Login <-> Register)
+        this.$authToggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.isLoginMode = !this.isLoginMode;
+            if (this.isLoginMode) {
+                this.$authTitle.textContent = 'Iniciar Sesión';
+                this.$authForm.querySelector('button').textContent = 'Entrar';
+                this.$authToggleText.textContent = '¿No tienes cuenta?';
+                this.$authToggleLink.textContent = 'Regístrate aquí';
+            } else {
+                this.$authTitle.textContent = 'Registrarse';
+                this.$authForm.querySelector('button').textContent = 'Registrar';
+                this.$authToggleText.textContent = '¿Ya tienes cuenta?';
+                this.$authToggleLink.textContent = 'Inicia sesión aquí';
+            }
+            this.$authError.textContent = '';
+        });
+
+        // Auth Submit
+        this.$authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = this.$authUsername.value;
+            const password = this.$authPassword.value;
+            await this.autenticar(username, password);
+        });
+
+        // Logout
+        this.$btnLogout.addEventListener('click', () => {
+            this.cerrarSesion();
+        });
+
         // Submit formulario
         this.$form.addEventListener('submit', (e) => { // Escucha el evento submit del formulario
             e.preventDefault(); // Previene que la página se recargue
-            this.agregarTarea(this.$input.value); // Llama al método para agregar tarea con el valor del input
+            this.agregarTareaAPI(this.$input.value); // API CALL
             this.$input.value = ''; // Limpia el campo de texto
             this.$input.focus(); // Devuelve el foco al input
         });
@@ -102,12 +158,13 @@ class GestorDeTareas { // Definición de la clase principal para gestionar la ap
 
             if (btnEliminar) { // Si se hizo click en eliminar
                 if (confirm('¿Borrar esta tarea permanentemente?')) { // Pide confirmación
-                    this.eliminarTarea(id); // Llama a eliminar tarea
+                    this.eliminarTareaAPI(id); // API CALL
                 }
             } else if (btnEditar) { // Si se hizo click en editar
                 this.solicitarEdicion(id); // Activa el modo edición
             } else if (checkbox) { // Si se hizo click en el checkbox
-                this.alternarTarea(id); // Alterna el estado de la tarea
+                const nuevaCompleta = checkbox.checked;
+                this.alternarTareaAPI(id, nuevaCompleta); // API CALL
             } else if (btnGuardar) { // Si se hizo click en guardar cambios
                 this.guardarEdicionInline(id); // Guarda los cambios de la edición en línea
             } else if (btnCancelar) { // Si se hizo click en cancelar edición
@@ -115,13 +172,14 @@ class GestorDeTareas { // Definición de la clase principal para gestionar la ap
             }
         });
 
-        // Borrar todo
-        this.$borrarTodo.addEventListener('click', () => { // Escucha click en borrar todo
-            if (this.tareas.length === 0) return; // Si no hay tareas, no hace nada
-            if (confirm('¿Estás seguro de querer borrar todas las tareas?')) { // Pide confirmación
-                this.borrarTodo(); // Llama a borrar todas las tareas
+        /* Desactivado Borrar Todo por ahora
+        this.$borrarTodo.addEventListener('click', () => { 
+            if (this.tareas.length === 0) return; 
+            if (confirm('¿Estás seguro de querer borrar todas las tareas?')) { 
+                this.borrarTodo(); 
             }
         });
+        */
 
         // Filtros
         this.$filtros.forEach(btn => { // Itera sobre los botones de filtro
@@ -131,6 +189,151 @@ class GestorDeTareas { // Definición de la clase principal para gestionar la ap
                 this.setFiltro(filtro); // Aplica el nuevo filtro
             });
         });
+    }
+
+    // --- API & AUTH METODOS ---
+
+    async autenticar(username, password) {
+        const endpoint = this.isLoginMode ? '/login' : '/register';
+        try {
+            const response = await fetch(`http://localhost:3000${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error de autenticación');
+            }
+
+            if (this.isLoginMode) {
+                this.token = data.token;
+                localStorage.setItem('jwt_token', this.token);
+                this.$authUsername.value = '';
+                this.$authPassword.value = '';
+                this.verificarSesion();
+            } else {
+                // Registro exitoso, auto-login o pedir login
+                alert('Registro exitoso. Por favor inicia sesión.');
+                this.$authToggleLink.click(); // Cambiar a modo login
+            }
+
+        } catch (error) {
+            this.$authError.textContent = error.message;
+            setTimeout(() => this.$authError.textContent = '', 3000);
+        }
+    }
+
+    cerrarSesion() {
+        this.token = null;
+        localStorage.removeItem('jwt_token');
+        this.tareas = [];
+        this.verificarSesion();
+    }
+
+    // API CRUD Helpers
+    getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        };
+    }
+
+    async cargarTareasAPI() {
+        try {
+            const response = await fetch('http://localhost:3000/tareas', {
+                headers: this.getHeaders()
+            });
+            if (response.status === 401) {
+                this.cerrarSesion();
+                return;
+            }
+            const data = await response.json();
+            // Convertir objetos planos a instancias de Tarea
+            this.tareas = data.map(obj => Tarea.fromJson(obj));
+            this.render();
+        } catch (error) {
+            console.error('Error cargando tareas:', error);
+            this.mostrarError('Error de conexión con el servidor');
+        }
+    }
+
+    async agregarTareaAPI(nombre) {
+        const limpio = nombre.trim();
+        if (!limpio) {
+            this.mostrarError("No se puede agregar una tarea vacía");
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/tareas', {
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ nombre: limpio })
+            });
+
+            if (!response.ok) throw new Error('Error al crear tarea');
+            
+            await this.cargarTareasAPI(); // Recargar lista
+        } catch (error) {
+            console.error(error);
+            this.mostrarError('No se pudo guardar la tarea');
+        }
+    }
+
+    async eliminarTareaAPI(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/tareas/${id}`, {
+                method: 'DELETE',
+                headers: this.getHeaders()
+            });
+
+            if (!response.ok) throw new Error('Error al eliminar');
+
+            await this.cargarTareasAPI();
+        } catch (error) {
+            console.error(error);
+            this.mostrarError('No se pudo eliminar la tarea');
+        }
+    }
+
+    async alternarTareaAPI(id, completa) {
+        // Optimistic update (actualizar UI antes de confirmar) podría ser buena idea, 
+        // pero por simplicidad recargaremos o actualizaremos localmente.
+        // Vamos a hacer update real.
+        try {
+            const response = await fetch(`http://localhost:3000/tareas/${id}`, {
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ completa })
+            });
+
+            if (!response.ok) throw new Error('Error al actualizar estado');
+
+            await this.cargarTareasAPI();
+        } catch (error) {
+            console.error(error);
+            this.mostrarError('No se pudo actualizar la tarea');
+        }
+    }
+
+    async editarTareaAPI(id, nuevoNombre) {
+        try {
+            const response = await fetch(`http://localhost:3000/tareas/${id}`, {
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ nombre: nuevoNombre })
+            });
+
+            if (!response.ok) throw new Error('Error al actualizar nombre');
+
+            await this.cargarTareasAPI();
+        } catch (error) {
+            console.error(error);
+            this.mostrarError('No se pudo editar la tarea');
+        }
     }
 
     // Activar modo edición en línea
@@ -192,7 +395,7 @@ class GestorDeTareas { // Definición de la clase principal para gestionar la ap
             return; // Sale sin guardar
         }
 
-        this.editarTarea(id, nuevoNombre); // Llama al método de editar lógica
+        this.editarTareaAPI(id, nuevoNombre); // Llama al método de editar lógica API
     }
 
     // Validación y Errores

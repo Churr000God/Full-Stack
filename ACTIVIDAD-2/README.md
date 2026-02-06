@@ -1,69 +1,181 @@
-# Gestor de Tareas (ToDo List)
+# Documentación del Proyecto Gestor de Tareas (Full Stack)
 
-Este repositorio contiene el código fuente de una aplicación web para la gestión de tareas (ToDo List) moderna y responsive, diseñada para organizar actividades diarias con funcionalidades de creación, edición, eliminación y filtrado.
+Este documento detalla el funcionamiento del proyecto, explicando el código sección por sección y línea por línea, además de instrucciones para su instalación y ejecución.
 
-## 🚀 Características Principales
+## Tabla de Contenidos
+1. [Estructura del Proyecto](#estructura-del-proyecto)
+2. [Instrucciones de Inicialización](#instrucciones-de-inicialización)
+   - [Windows (Automático)](#windows-automático)
+   - [Linux/Mac (Automático)](#linuxmac-automático)
+   - [Manual](#manual)
+3. [Explicación Detallada del Código (Backend)](#explicación-detallada-del-código-backend)
+4. [Explicación Detallada del Código (Frontend)](#explicación-detallada-del-código-frontend)
 
-*   **Diseño Responsive:** Adaptable a dispositivos móviles (tarjetas) y escritorio (tabla).
-*   **Gestión de Tareas (CRUD):** Funcionalidad completa para crear, leer, actualizar y eliminar tareas.
-*   **Edición en Línea:** Capacidad de editar tareas directamente en la lista sin ventanas emergentes intrusivas.
-*   **Persistencia de Datos:** Almacenamiento automático en `localStorage` para no perder la información al recargar.
-*   **Filtrado Dinámico:** Organización de tareas por estado (Todas, Completadas, Pendientes).
-*   **Interfaz Moderna:** Diseño limpio con efectos visuales, transiciones y feedback al usuario.
+---
 
-## 🛠️ Tecnologías Utilizadas
-
-*   **HTML5:** Estructura semántica y accesible.
-*   **CSS3:**
-    *   Variables CSS para consistencia visual.
-    *   Diseño adaptable con Media Queries.
-    *   Estilos específicos para tablas y formularios.
-    *   Efectos de hover y transiciones suaves.
-*   **JavaScript (Vanilla):**
-    *   Programación Orientada a Objetos (Clases `Tarea` y `GestorDeTareas`).
-    *   Manipulación avanzada del DOM.
-    *   Manejo de eventos y delegación.
-    *   Uso de `localStorage` para persistencia.
-
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 ACTIVIDAD-2/
-├── index.html          # Estructura principal y maquetación
-├── CSS/
-│   └── style.css       # Estilos globales, responsividad y temas
-├── JS/
-│   └── app.js          # Lógica de la aplicación y clases
-├── ASSETS/
-│   ├── Imagenes/       # Recursos gráficos (Hero image)
-│   └── Iconos/         # Iconos de interfaz
-└── README.md           # Documentación del proyecto
+├── BACKEND/
+│   ├── server.js          # Servidor Express principal
+│   ├── package.json       # Dependencias de Node.js
+│   ├── tareas.json        # Base de datos local de tareas
+│   └── usuarios.json      # Base de datos local de usuarios
+├── FRONTEND/
+│   ├── index.html         # Interfaz de usuario
+│   ├── CSS/style.css      # Estilos visuales
+│   └── JS/app.js          # Lógica del cliente (Fetch API)
+├── setup.ps1              # Script de instalación para Windows
+├── setup.sh               # Script de instalación para Linux/Mac
+└── README.md              # Este archivo
 ```
 
-## 🔧 Instalación y Uso
+---
 
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/Churr000God/Full-Stack.git
-    ```
-2.  **Navegar al proyecto:**
-    Ubícate en la carpeta `ACTIVIDAD-2`.
-3.  **Abrir la aplicación:**
-    Abre el archivo `index.html` en tu navegador web preferido.
+## Instrucciones de Inicialización
 
-## 🎨 Personalización
+Hemos creado scripts automáticos para facilitar la instalación de dependencias y el inicio del servidor.
 
-El proyecto utiliza variables CSS en `CSS/style.css` para facilitar la personalización:
+### Windows (Automático)
+1. Abre una terminal (PowerShell).
+2. Navega a la carpeta raíz del proyecto.
+3. Ejecuta el script:
+   ```powershell
+   .\setup.ps1
+   ```
+   *Este script instalará las dependencias en `BACKEND` y arrancará el servidor.*
 
-```css
-:root {
-    --orange-main: #FF6B00;    /* Color principal */
-    --orange-soft: #FF8533;    /* Variación suave */
-    --bg-main: #FFFFFF;        /* Fondo principal */
-    --text-color: #333333;     /* Color de texto */
+### Linux/Mac (Automático)
+1. Abre una terminal.
+2. Navega a la carpeta raíz.
+3. Da permisos de ejecución y corre el script:
+   ```bash
+   chmod +x setup.sh
+   ./setup.sh
+   ```
+
+### Manual
+Si prefieres hacerlo paso a paso:
+1. Ve a la carpeta `BACKEND`: `cd BACKEND`
+2. Instala dependencias: `npm install`
+3. Inicia el servidor: `node server.js`
+4. Abre `FRONTEND/index.html` en tu navegador.
+
+---
+
+## Explicación Detallada del Código (Backend)
+
+Archivo: `BACKEND/server.js`
+
+### 1. Importaciones y Configuración
+```javascript
+const express = require('express');      // Framework web para Node.js
+const bodyParser = require('body-parser'); // Middleware para parsear bodies (aunque express.json lo reemplaza)
+const fs = require('fs').promises;       // Sistema de archivos con promesas (async/await)
+const path = require('path');            // Manejo de rutas de archivos
+const bcrypt = require('bcryptjs');      // Librería para encriptar contraseñas
+const jwt = require('jsonwebtoken');     // Librería para generar tokens JWT
+const cors = require('cors');            // Middleware para permitir peticiones desde el frontend
+```
+
+### 2. Middlewares de Seguridad y Lógica
+#### Middleware de Autenticación (`verificarToken`)
+Este código protege las rutas privadas.
+```javascript
+const verificarToken = (req, res, next) => {
+    // 1. Obtiene el header 'Authorization' de la petición
+    const authHeader = req.headers['authorization'];
+    // 2. Extrae el token (formato "Bearer <token>")
+    const token = authHeader && authHeader.split(' ')[1];
+
+    // 3. Si no hay token, deniega el acceso (401)
+    if (!token) {
+        return res.status(401).json({ error: 'Acceso denegado. Token requerido.' });
+    }
+
+    try {
+        // 4. Verifica que el token sea válido usando la clave secreta
+        const verificado = jwt.verify(token, SECRET_KEY);
+        // 5. Si es válido, guarda los datos del usuario en la request
+        req.usuario = verificado;
+        // 6. Pasa al siguiente middleware o ruta
+        next();
+    } catch (error) {
+        // 7. Si falla la verificación, devuelve error 401
+        res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+};
+```
+
+#### Middleware de Validación (`validarTarea`)
+Asegura que los datos recibidos sean correctos.
+```javascript
+const validarTarea = (req, res, next) => {
+    const { nombre } = req.body;
+    
+    // Si intentan CREAR (POST), el nombre es obligatorio
+    if (req.method === 'POST') {
+        if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+            return res.status(400).json({ error: 'Título obligatorio' });
+        }
+    }
+    next(); // Si pasa la validación, continúa
+};
+```
+
+### 3. Rutas (Endpoints)
+- **POST /login**: Recibe usuario/pass, verifica con `bcrypt`, y si es correcto devuelve un `token` JWT.
+- **GET /tareas**: (Protegido) Lee `tareas.json` y devuelve la lista.
+- **POST /tareas**: (Protegido) Recibe un JSON, valida datos, agrega al array y guarda en disco.
+
+---
+
+## Explicación Detallada del Código (Frontend)
+
+Archivo: `FRONTEND/JS/app.js`
+
+### 1. Autenticación y JWT
+La clase `GestorDeTareas` maneja el token JWT.
+
+```javascript
+// Método para obtener headers con el token automáticamente
+getHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        // Inyecta el token en cada petición para que el backend nos reconozca
+        'Authorization': `Bearer ${this.token}`
+    };
+}
+
+// Carga de tareas desde el servidor
+async cargarTareasAPI() {
+    try {
+        // Hace petición GET a localhost:3000/tareas
+        const response = await fetch('http://localhost:3000/tareas', {
+            headers: this.getHeaders() // Usa los headers con token
+        });
+        
+        // Si el token expiró (401), cierra sesión automáticamente
+        if (response.status === 401) {
+            this.cerrarSesion();
+            return;
+        }
+        
+        // Convierte respuesta a JSON y actualiza la lista local
+        const data = await response.json();
+        this.tareas = data.map(obj => Tarea.fromJson(obj));
+        this.render(); // Dibuja la tabla HTML
+    } catch (error) {
+        console.error('Error cargando tareas:', error);
+    }
 }
 ```
 
-## 📄 Licencia
+### 2. Debugging
+Se han añadido logs en el servidor para rastrear eventos:
+- `[DEBUG] Login correcto...`: Cuando un usuario entra.
+- `[DEBUG] Tarea creada...`: Cuando se guarda un dato.
+- `[DEBUG] Error...`: Para fallos de lectura/escritura.
 
-Este proyecto es parte del portafolio de desarrollo Full Stack.
+Esto permite monitorear la aplicación en tiempo real usando `node --inspect`.

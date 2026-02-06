@@ -288,7 +288,8 @@ header {
   z-index: 1; /* Nivel de apilamiento */
 }
 
-.form-container-content input[type="text"] {
+.form-container-content input[type="text"],
+.form-container-content input[type="password"] {
   padding: 1rem 1.5rem; /* Espaciado interno del input */
   font-size: 1rem; /* Tamaño de fuente */
   border: 2px solid var(--border-color); /* Borde sutil */
@@ -300,7 +301,8 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna sutil */
 }
 
-.form-container-content input[type="text"]:focus {
+.form-container-content input[type="text"]:focus,
+.form-container-content input[type="password"]:focus {
   background-color: var(--bg-main); /* Fondo blanco al foco */
   box-shadow: 0 0 0 4px rgba(241, 109, 52, 0.1); /* Sombra de foco naranja */
   transform: translateY(-2px); /* Ligera elevación */

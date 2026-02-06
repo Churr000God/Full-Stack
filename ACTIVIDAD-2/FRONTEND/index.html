@@ -1,0 +1,152 @@
+<!DOCTYPE html> 
+<!-- Define el documento como HTML5 estándar -->
+<html lang="es"> 
+<!-- Elemento raíz. 'lang="es"' indica a los navegadores y lectores de pantalla que el contenido está en español -->
+
+<head> 
+    <!-- Sección de metadatos y configuración, invisible para el usuario pero vital para el navegador -->
+    
+    <meta charset="UTF-8"> 
+    <!-- Configura la codificación de caracteres a UTF-8 para soportar tildes, ñ y caracteres especiales -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <!-- Configuración clave para Diseño Responsivo: ajusta el ancho de la página al ancho del dispositivo móvil -->
+    
+    <meta name="description" content="Task Collab - Administra tus tareas, mejora tu productividad. Ideal para estudiantes."> 
+    <!-- Descripción para motores de búsqueda (SEO) que aparece en los resultados de Google -->
+    
+    <title>Task Collab</title> 
+    <!-- Título que se muestra en la pestaña del navegador -->
+    
+    <!-- Enlace al archivo CSS externo para los estilos visuales -->
+    <link rel="stylesheet" href="./CSS/style.css">
+    
+    <!-- Enlace al archivo JS principal. 'defer' hace que se ejecute SOLO cuando todo el HTML ha cargado -->
+    <script src="./JS/app.js" defer></script>
+</head>
+
+<body> 
+    <!-- Cuerpo visible de la página web -->
+    
+    <!-- ENCABEZADO SUPERIOR -->
+    <header>
+        <section class="header_container"> 
+            <!-- Sección hero con logo, título e imagen principal -->
+            
+            <div class="header-container-rombo"> 
+                <!-- Contenedor decorativo para el título -->
+                <h1>Task Collab</h1> <!-- Título principal h1 (importante para SEO) -->
+                <img class="header-icon" src="./ASSETS/Iconos/Icono_palomita.png" alt="Icono de verificación"> 
+            </div>
+            
+            <div class="header_image"> 
+                <!-- Imagen ilustrativa principal -->
+                <img src="./ASSETS/Imagenes/hero_image.jpg" alt="Imagen ilustrativa de productividad">
+            </div>
+        </section>
+
+        <!-- BARRA DE BENEFICIOS (ICONOS) -->
+        <section class="header-bar" aria-label="Ventajas">
+            <ul class="header-bar-container"> <!-- Lista no ordenada de beneficios -->
+                <li class="header-bar-adv"> <!-- Item 1 -->
+                    <img src="./ASSETS/Iconos/Tareas.png" alt="Icono de tareas" aria-hidden="true">
+                    <p>Administra Tareas</p>
+                </li>
+                <li class="header-bar-adv"> <!-- Item 2 -->
+                    <img src="./ASSETS/Iconos/tiempo-restante.png" alt="Icono de tiempo restante" aria-hidden="true">
+                    <p>Mejora tu Productividad</p>
+                </li>
+                <li class="header-bar-adv"> <!-- Item 3 -->
+                    <img src="./ASSETS/Iconos/sombrero-de-graduacion.png" alt="Icono de graduación" aria-hidden="true">
+                    <p>Ideal para Estudiantes</p>
+                </li>
+            </ul>
+        </section>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DE LA APLICACIÓN -->
+    <main class="task">
+        
+        <!-- SECCIÓN DE AUTENTICACIÓN (LOGIN/REGISTRO) -->
+        <!-- Se muestra por defecto si no hay sesión iniciada -->
+        <section id="auth-section" class="form-container" style="display: block;">
+            <div class="form-container-content" style="max-width: 400px; margin: 0 auto;">
+                <h2 id="auth-title">Iniciar Sesión</h2>
+                
+                <!-- Formulario de Login -->
+                <form class="form" id="form-auth" autocomplete="off" style="flex-direction: column; gap: 1rem;">
+                    <input type="text" id="auth-username" placeholder="Usuario" required style="width: 100%; padding: 10px;">
+                    <input type="password" id="auth-password" placeholder="Contraseña" required style="width: 100%; padding: 10px;">
+                    <button type="submit" class="btn-submit" style="width: 100%;">Entrar</button>
+                </form>
+                
+                <!-- Link para alternar entre Login y Registro -->
+                <p style="margin-top: 1rem; text-align: center;">
+                    <span id="auth-toggle-text">¿No tienes cuenta?</span> 
+                    <a href="#" id="auth-toggle-link" style="color: var(--primary-color); font-weight: bold;">Regístrate aquí</a>
+                </p>
+                
+                <!-- Contenedor para mostrar errores de autenticación -->
+                <div id="auth-error" class="error" role="alert" aria-live="polite" style="margin-top: 10px;"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE GESTIÓN DE TAREAS -->
+        <!-- Oculta por defecto (display: none), se muestra vía JS al iniciar sesión -->
+        <section id="task-section" class="form-container" style="display: none;">
+            
+            <!-- PANEL SUPERIOR: Formulario de nueva tarea -->
+            <div class="form-container-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1rem;">
+                    <h2>Registra tus tareas</h2>
+                    <button id="btn-logout" class="danger" style="padding: 5px 10px; font-size: 0.8rem;">Cerrar Sesión</button>
+                </div>
+                
+                <form class="form" id="form-tarea" autocomplete="off"> 
+                    <!-- Input principal para escribir tareas -->
+                    <input type="text" id="nueva-tarea" placeholder="Escribe tu próxima tarea..." required> 
+                    <button type="submit" class="btn-submit">Agregar</button> 
+                </form>
+                
+                <!-- Contador dinámico -->
+                <span id="contador">0 tareas</span> 
+            </div>
+
+            <!-- Contenedor de errores generales de la app -->
+            <div id="error" class="error" role="alert" aria-live="polite"></div>
+
+            <!-- LISTADO DE TAREAS Y FILTROS -->
+            <div class="tabla-contenedor">
+                <!-- Botones para filtrar la vista (Todas, Pendientes, Completadas) -->
+                <div class="Barra-de-filtros" role="group" aria-label="Filtros">
+                    <button id="filtrar-todas" class="filtro" aria-pressed="true">Todas</button>
+                    <button id="filtrar-pendientes" class="filtro" aria-pressed="false">Pendientes</button>
+                    <button id="filtrar-completadas" class="filtro" aria-pressed="false">Completadas</button>
+                </div>
+                
+                <!-- Tabla HTML donde se inyectan las tareas -->
+                <div class="table-responsive">
+                    <table class="tabla-tareas">
+                        <thead> 
+                            <tr>
+                                <th>Estado</th>
+                                <th>Tarea</th>
+                                <th>Fecha de Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-tareas"> 
+                            <!-- AQUÍ INYECTA JAVASCRIPT LAS FILAS (TR) DE TAREAS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer">
+        <!-- Espacio reservado para copyright o enlaces adicionales -->
+    </footer>
+</body>
+</html>
