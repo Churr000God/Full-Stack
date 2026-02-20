@@ -1,0 +1,57 @@
+<!doctype html> <!-- Indica tipo de documento HTML5 -->
+<html lang="es"> <!-- Define idioma principal del documento -->
+<head> <!-- Cabecera del documento -->
+  <meta charset="utf-8"> <!-- Codificación de caracteres en UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ajuste responsive en móviles -->
+  <title>CATPRO · Iniciar sesión</title> <!-- Título de la pestaña del navegador -->
+  <link rel="stylesheet" href="styles.css"> <!-- Enlace a hoja de estilos principal -->
+</head>
+<body class="cp-body"> <!-- Cuerpo de la página con clase de tema general -->
+  <div class="cp-auth-layout"> <!-- Contenedor principal de layout de autenticación -->
+    <div class="cp-auth-brand"> <!-- Columna de marca y descripción -->
+      <div class="cp-logo">CATPRO</div> <!-- Logotipo / nombre de la app -->
+      <p class="cp-tagline">Catálogo de productos seguro y sencillo.</p> <!-- Eslogan descriptivo -->
+    </div>
+    <main class="cp-auth-card"> <!-- Tarjeta principal del formulario de login -->
+      <h1 class="cp-title">Bienvenido a CATPRO</h1> <!-- Título de la página -->
+      <p class="cp-subtitle">Inicia sesión para gestionar tus productos.</p> <!-- Subtítulo explicativo -->
+      <form id="form" class="cp-form"> <!-- Formulario de inicio de sesión -->
+        <label class="cp-field"> <!-- Campo de formulario para email -->
+          <span>Email</span> <!-- Etiqueta visual del campo -->
+          <input type="email" name="email" required> <!-- Input de email obligatorio -->
+        </label>
+        <label class="cp-field"> <!-- Campo de formulario para contraseña -->
+          <span>Contraseña</span> <!-- Etiqueta visual del campo -->
+          <input type="password" name="password" required> <!-- Input de contraseña obligatorio -->
+        </label>
+        <button type="submit" class="cp-button">Acceder</button> <!-- Botón para enviar formulario -->
+      </form>
+      <p id="error" class="cp-error"></p> <!-- Contenedor para mostrar mensajes de error -->
+    </main>
+  </div>
+  <script> <!-- Bloque de script de la página -->
+    const API_BASE_URL = 'http://localhost:3000' // URL base del backend
+    const form = document.getElementById('form') // Referencia al formulario
+    const error = document.getElementById('error') // Referencia al párrafo de error
+    form.addEventListener('submit', async (e) => { // Maneja evento submit del formulario
+      e.preventDefault() // Evita recargar la página
+      error.textContent = '' // Limpia mensaje de error previo
+      const data = Object.fromEntries(new FormData(form).entries()) // Extrae datos del formulario como objeto
+      const r = await fetch(API_BASE_URL + '/api/auth/login', { // Envía petición POST al endpoint de login
+        method: 'POST', // Método HTTP POST
+        headers: { 'Content-Type': 'application/json' }, // Indica que el body es JSON
+        body: JSON.stringify(data) // Cuerpo con email y password
+      })
+      if (!r.ok) { // Si la respuesta no es 2xx
+        error.textContent = 'Credenciales inválidas. Inténtalo de nuevo.' // Muestra mensaje de error
+        return // Sale de la función
+      }
+      const j = await r.json() // Parsea la respuesta como JSON
+      if (j.token) { // Si el backend envía un token
+        localStorage.setItem('token', j.token) // Guarda token en localStorage
+        window.location.href = 'admin.html' // Redirige al panel de administración
+      }
+    })
+  </script>
+</body>
+</html>

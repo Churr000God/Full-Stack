@@ -1,0 +1,42 @@
+Entidades y relación (borrador para Word)
+
+User
+  - _id: ObjectId (PK)
+  - name: String
+  - email: String (único)
+  - passwordHash: String (bcrypt)
+  - createdAt: Date
+
+Product
+  - _id: ObjectId (PK)
+  - name: String
+  - description: String
+  - price: Number
+  - stock: Number
+  - createdBy: ObjectId (FK → User._id)
+  - createdAt: Date
+  - updatedAt: Date
+
+Relación
+  - User (1) — (N) Product
+  - Product.createdBy referencia a User._id
+
+Diagrama (ASCII)
+
+  +------------------+            +-------------------+
+  |      User        |            |      Product      |
+  |------------------|            |-------------------|
+  | _id  (ObjectId)  |<--------+  | _id   (ObjectId)  |
+  | name (String)    |         |  | name  (String)    |
+  | email(String, U) |         |  | description(String)|
+  | passwordHash(Str)|         |  | price (Number)    |
+  | createdAt (Date) |         |  | stock (Number)    |
+  +------------------+         |  | createdBy (ObjectId FK) |
+                               |  | createdAt (Date)   |
+                               |  | updatedAt (Date)   |
+                               |  +-------------------+
+                               +-----------------------------+
+
+Notas
+  - Mongoose: Product usa { timestamps: true } para createdAt/updatedAt.
+  - Integridad: createdBy es required y referencia a User.

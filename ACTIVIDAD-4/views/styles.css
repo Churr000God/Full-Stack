@@ -1,0 +1,231 @@
+* { /* Aplica box-sizing a todos los elementos */
+  box-sizing: border-box; /* Incluye padding/borde en el tamaño total */
+}
+
+body.cp-body { /* Estilos base del body con tema oscuro */
+  margin: 0; /* Elimina márgenes por defecto */
+  min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* Fuente base */
+  background: radial-gradient(circle at top left, #1e293b, #020617); /* Fondo degradado */
+  color: #e5e7eb; /* Color de texto principal */
+}
+
+.cp-logo { /* Estilo del logo CATPRO */
+  display: inline-flex; /* Caja flexible en línea */
+  align-items: center; /* Centra contenido verticalmente */
+  justify-content: center; /* Centra contenido horizontalmente */
+  padding: 0.5rem 1rem; /* Espaciado interno */
+  border-radius: 999px; /* Bordes redondeados tipo píldora */
+  background: linear-gradient(135deg, #4f46e5, #22c55e); /* Degradado verde/azul */
+  font-weight: 700; /* Texto en negrita */
+  letter-spacing: 0.12em; /* Espacio entre letras */
+  text-transform: uppercase; /* Texto en mayúsculas */
+  font-size: 0.9rem; /* Tamaño de fuente del logo */
+}
+
+.cp-auth-layout { /* Layout principal de pantalla de login */
+  display: flex; /* Usa flexbox */
+  min-height: 100vh; /* Altura mínima pantalla completa */
+  padding: 2rem; /* Espaciado alrededor */
+  gap: 2rem; /* Espacio entre columnas */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+}
+
+.cp-auth-brand { /* Columna de texto de marca */
+  max-width: 360px; /* Ancho máximo de la columna */
+}
+
+.cp-tagline { /* Texto de eslogan */
+  margin-top: 1rem; /* Margen superior */
+  color: #9ca3af; /* Color gris suave */
+}
+
+.cp-auth-card { /* Tarjeta que contiene el formulario de login */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  max-width: 380px; /* Máximo ancho de la tarjeta */
+  padding: 2rem; /* Espaciado interno */
+  border-radius: 1rem; /* Bordes redondeados */
+  background: rgba(15, 23, 42, 0.95); /* Fondo oscuro semitransparente */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75); /* Sombra para efecto elevado */
+}
+
+.cp-title { /* Títulos principales */
+  margin: 0 0 .5rem; /* Margen inferior */
+  font-size: 1.75rem; /* Tamaño de fuente grande */
+}
+
+.cp-subtitle { /* Subtítulos o descripciones cortas */
+  margin: 0 0 1.5rem; /* Margen inferior amplio */
+  color: #9ca3af; /* Color gris claro */
+  font-size: 0.95rem; /* Tamaño de fuente ligeramente menor */
+}
+
+.cp-form { /* Contenedor de formularios */
+  display: grid; /* Layout en grid */
+  gap: 1rem; /* Espacio entre campos */
+}
+
+.cp-field { /* Contenedor de cada campo de formulario */
+  display: grid; /* Layout en grid vertical */
+  gap: .25rem; /* Pequeño espacio entre etiqueta e input */
+  font-size: 0.9rem; /* Tamaño de fuente */
+}
+
+.cp-field span { /* Etiquetas de campos */
+  color: #e5e7eb; /* Texto claro */
+}
+
+.cp-field input,
+.cp-field textarea { /* Inputs y áreas de texto */
+  padding: 0.6rem 0.75rem; /* Espaciado interno */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  border: 1px solid #4b5563; /* Borde gris oscuro */
+  background: #020617; /* Fondo muy oscuro */
+  color: #f9fafb; /* Texto casi blanco */
+}
+
+.cp-field input:focus,
+.cp-field textarea:focus { /* Estilo cuando el campo tiene foco */
+  outline: 2px solid #4f46e5; /* Contorno azul */
+  border-color: transparent; /* Oculta borde estándar */
+}
+
+.cp-button { /* Botón principal */
+  padding: 0.7rem 1rem; /* Espaciado interno */
+  border-radius: 999px; /* Bordes tipo píldora */
+  border: none; /* Sin borde visible */
+  background: linear-gradient(135deg, #4f46e5, #6366f1); /* Degradado azul */
+  color: #f9fafb; /* Texto claro */
+  font-weight: 600; /* Negrita ligera */
+  cursor: pointer; /* Cursor de mano */
+}
+
+.cp-button:hover { /* Efecto hover en botón principal */
+  filter: brightness(1.05); /* Aumenta brillo ligeramente */
+}
+
+.cp-button-secondary { /* Variante secundaria de botón */
+  background: transparent; /* Fondo transparente */
+  border: 1px solid #4b5563; /* Borde gris */
+}
+
+.cp-error { /* Mensajes de error (login, etc.) */
+  margin-top: 1rem; /* Separación superior */
+  color: #f97373; /* Rojo suave */
+  font-size: 0.9rem; /* Tamaño de fuente estándar */
+}
+
+.cp-info { /* Mensajes informativos (por ejemplo, creación OK) */
+  margin-top: 0.5rem; /* Separación superior */
+  font-size: 0.85rem; /* Un poco más pequeño */
+  color: #9ca3af; /* Color gris claro */
+}
+
+.cp-admin-layout { /* Layout vertical del panel admin */
+  min-height: 100vh; /* Ocupa altura completa */
+  display: flex; /* Uso de flexbox */
+  flex-direction: column; /* Columnas verticales */
+}
+
+.cp-admin-header { /* Cabecera fija de administración */
+  display: flex; /* Distribuye logo y usuario */
+  justify-content: space-between; /* Elementos a extremos */
+  align-items: center; /* Centra verticalmente */
+  padding: 1rem 2rem; /* Espacio interior */
+  border-bottom: 1px solid #1f2933; /* Línea divisoria inferior */
+  background: rgba(15, 23, 42, 0.9); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(10px); /* Desenfoque de fondo (efecto vidrio) */
+}
+
+.cp-admin-info { /* Contenedor de info de usuario */
+  display: flex; /* Layout horizontal */
+  align-items: center; /* Centra contenidos */
+  gap: 1rem; /* Separación entre email y botón */
+}
+
+.cp-user-email { /* Estilo del texto de email de usuario */
+  font-size: 0.9rem; /* Tamaño fuente */
+  color: #9ca3af; /* Gris claro */
+}
+
+.cp-admin-main { /* Contenedor principal de panel */
+  flex: 1; /* Ocupa espacio restante */
+  padding: 2rem; /* Espaciado interior */
+  display: grid; /* Layout en grid */
+  gap: 1.5rem; /* Espacio entre secciones */
+}
+
+.cp-panel { /* Tarjetas/paneles dentro del admin */
+  padding: 1.5rem; /* Espaciado interno */
+  border-radius: 1rem; /* Bordes redondeados */
+  background: rgba(15, 23, 42, 0.9); /* Fondo oscuro */
+  border: 1px solid #1f2937; /* Borde ligeramente más claro */
+}
+
+.cp-panel-title { /* Títulos de paneles secundarios */
+  margin: 0 0 1rem; /* Margen inferior */
+  font-size: 1.2rem; /* Tamaño de fuente medio */
+}
+
+.cp-grid { /* Grid de dos columnas (form + tabla) */
+  display: grid; /* Activa grid layout */
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr); /* Columnas proporcionadas */
+  gap: 1.5rem; /* Espaciado entre columnas */
+}
+
+@media (max-width: 768px) { /* Estilos para pantallas pequeñas */
+  .cp-auth-layout { /* Ajuste de layout de login en móvil */
+    flex-direction: column; /* Coloca elementos en columna */
+    padding: 1.5rem; /* Reduce padding */
+  }
+  .cp-grid { /* Ajuste del grid de admin en móvil */
+    grid-template-columns: minmax(0, 1fr); /* Solo una columna */
+  }
+}
+
+.cp-table { /* Estilo base de tabla de productos */
+  width: 100%; /* Ocupa ancho completo */
+  border-collapse: collapse; /* Colapsa bordes de celdas */
+  font-size: 0.9rem; /* Tamaño de letra de celdas */
+}
+
+.cp-table th,
+.cp-table td { /* Celdas de cabecera y cuerpo */
+  padding: 0.6rem 0.5rem; /* Espaciado interno */
+  border-bottom: 1px solid #1f2937; /* Línea divisoria entre filas */
+}
+
+.cp-table th { /* Estilo de cabeceras */
+  text-align: left; /* Alineación a la izquierda */
+  color: #9ca3af; /* Texto gris claro */
+  font-weight: 500; /* Peso de fuente medio */
+}
+
+.cp-link-button { /* Botones estilo enlace dentro de la tabla */
+  border: none; /* Sin borde */
+  background: none; /* Fondo transparente */
+  padding: 0; /* Sin padding extra */
+  cursor: pointer; /* Cursor de mano */
+  font-size: 0.85rem; /* Tamaño de fuente más pequeño */
+}
+
+.cp-link-button:hover { /* Efecto hover para botones-enlace */
+  text-decoration: underline; /* Subrayado al pasar el ratón */
+}
+
+.cp-link-button + .cp-link-button { /* Espaciado entre botones consecutivos */
+  margin-left: 0.5rem; /* Margen izquierdo pequeño */
+}
+
+.cp-link-in { /* Botón de entrada de stock */
+  color: #22c55e; /* Verde */
+}
+
+.cp-link-out { /* Botón de salida de stock */
+  color: #f97316; /* Naranja */
+}
+
+.cp-link-delete { /* Botón de eliminación de producto */
+  color: #f97373; /* Rojo suave */
+}

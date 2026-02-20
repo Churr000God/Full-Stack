@@ -1,0 +1,176 @@
+<!doctype html> <!-- Documento HTML5 -->
+<html lang="es"> <!-- Idioma de la página: español -->
+<head> <!-- Cabecera HTML -->
+  <meta charset="utf-8"> <!-- Codificación UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Layout responsive -->
+  <title>CATPRO · Administración</title> <!-- Título de pestaña -->
+  <link rel="stylesheet" href="styles.css"> <!-- Hoja de estilos principal -->
+</head>
+<body class="cp-body"> <!-- Cuerpo con fondo/tema general -->
+  <div class="cp-admin-layout"> <!-- Layout principal del panel admin -->
+    <header class="cp-admin-header"> <!-- Encabezado con logo y sesión -->
+      <div class="cp-logo">CATPRO</div> <!-- Logotipo/nombre de app -->
+      <div class="cp-admin-info"> <!-- Zona de información de usuario -->
+        <span id="userEmail" class="cp-user-email"></span> <!-- Aquí puedes mostrar email si se desea -->
+        <button id="logout" class="cp-button cp-button-secondary">Cerrar sesión</button> <!-- Botón logout -->
+      </div>
+    </header>
+    <main class="cp-admin-main"> <!-- Contenido principal del panel -->
+      <section class="cp-panel"> <!-- Panel introductorio -->
+        <h1 class="cp-title">Panel de productos</h1> <!-- Título del panel -->
+        <p class="cp-subtitle">Crea, consulta y administra los productos asociados a tu cuenta.</p> <!-- Descripción -->
+      </section>
+      <section class="cp-grid"> <!-- Grid con dos columnas: crear y listar -->
+        <section class="cp-panel"> <!-- Panel de creación de producto -->
+          <h2 class="cp-panel-title">Nuevo producto</h2> <!-- Título del formulario -->
+          <form id="createForm" class="cp-form"> <!-- Formulario para crear productos -->
+            <label class="cp-field"> <!-- Campo nombre -->
+              <span>Nombre</span> <!-- Etiqueta visual -->
+              <input type="text" name="name" required> <!-- Input de texto obligatorio -->
+            </label>
+            <label class="cp-field"> <!-- Campo precio -->
+              <span>Precio</span> <!-- Etiqueta -->
+              <input type="number" name="price" step="0.01" min="0" required> <!-- Precio numérico >= 0 -->
+            </label>
+            <label class="cp-field"> <!-- Campo stock -->
+              <span>Stock</span> <!-- Etiqueta -->
+              <input type="number" name="stock" min="0" step="1" value="0" required> <!-- Stock inicial, no negativo -->
+            </label>
+            <label class="cp-field"> <!-- Campo descripción -->
+              <span>Descripción</span> <!-- Etiqueta -->
+              <textarea name="description" rows="3"></textarea> <!-- Descripción opcional -->
+            </label>
+            <button type="submit" class="cp-button">Crear producto</button> <!-- Botón crear -->
+            <p id="createMsg" class="cp-info"></p> <!-- Mensaje de estado de creación -->
+          </form>
+        </section>
+        <section class="cp-panel"> <!-- Panel de listado de productos -->
+          <h2 class="cp-panel-title">Listado</h2> <!-- Título de la tabla -->
+          <table class="cp-table"> <!-- Tabla de productos -->
+            <thead> <!-- Cabecera de tabla -->
+              <tr> <!-- Fila de títulos -->
+                <th>Nombre</th> <!-- Columna nombre -->
+                <th>Precio</th> <!-- Columna precio -->
+                <th>Stock</th> <!-- Columna stock -->
+                <th></th> <!-- Columna acciones -->
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody> <!-- Cuerpo dinámico de productos -->
+          </table>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script> <!-- Lógica del panel admin -->
+    const API_BASE_URL = 'http://localhost:3000' // URL base del backend
+    function getToken() { // Obtiene token almacenado
+      return localStorage.getItem('token') // Lee token de localStorage
+    }
+    function ensureAuth() { // Verifica que haya token
+      const token = getToken() // Recupera token
+      if (!token) { // Si no existe
+        window.location.href = 'login.html' // Redirige a login
+      }
+      return token // Devuelve token válido
+    }
+    async function fetchProducts() { // Carga lista de productos del backend
+      const token = ensureAuth() // Asegura autenticación
+      const res = await fetch(API_BASE_URL + '/api/products', { // Petición GET a productos
+        headers: { 'Authorization': 'Bearer ' + token } // Añade encabezado con token
+      })
+      if (!res.ok) return // Si falla, no procesa
+      const data = await res.json() // Parsea lista de productos
+      const body = document.getElementById('productsBody') // Referencia al tbody
+      body.innerHTML = '' // Limpia filas previas
+      for (const p of data) { // Recorre productos
+        const tr = document.createElement('tr') // Crea fila
+        tr.dataset.stock = p.stock ?? 0 // Almacena stock actual en atributo de dataset
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.price}</td>
+          <td>${p.stock ?? 0}</td>
+          <td>
+            <button data-action="in" data-id="${p._id}" class="cp-link-button cp-link-in">Entrada</button>
+            <button data-action="out" data-id="${p._id}" class="cp-link-button cp-link-out">Salida</button>
+            <button data-action="delete" data-id="${p._id}" class="cp-link-button cp-link-delete">Eliminar</button>
+          </td>
+        ` // Define celdas de la fila con acciones
+        body.appendChild(tr) // Inserta fila en la tabla
+      }
+    }
+    document.getElementById('createForm').addEventListener('submit', async (e) => { // Maneja envío del formulario de creación
+      e.preventDefault() // Evita recarga de página
+      const token = ensureAuth() // Verifica token
+      const data = Object.fromEntries(new FormData(e.target).entries()) // Convierte formulario a objeto
+      data.price = Number(data.price) // Asegura tipo numérico en precio
+      data.stock = Number(data.stock) // Asegura tipo numérico en stock
+      const res = await fetch(API_BASE_URL + '/api/products', { // Petición POST para crear producto
+        method: 'POST', // Método POST
+        headers: {
+          'Content-Type': 'application/json', // Body en JSON
+          'Authorization': 'Bearer ' + token // Token de autenticación
+        },
+        body: JSON.stringify(data) // Cuerpo con datos del producto
+      })
+      const msg = document.getElementById('createMsg') // Mensaje de resultado
+      if (!res.ok) { // Si falla
+        msg.textContent = 'No se pudo crear el producto.' // Muestra error genérico
+        return // Termina
+      }
+      msg.textContent = 'Producto creado correctamente.' // Mensaje de éxito
+      e.target.reset() // Limpia formulario
+      fetchProducts() // Recarga listado
+    })
+    document.getElementById('productsBody').addEventListener('click', async (e) => { // Maneja clics en botones de tabla
+      const btn = e.target // Elemento clicado
+      if (!btn.matches('button[data-id]')) return // Ignora clics fuera de botones de acción
+      const id = btn.getAttribute('data-id') // Id del producto
+      const action = btn.getAttribute('data-action') // Acción solicitada
+      const token = ensureAuth() // Verifica token
+      if (action === 'delete') { // Si acción es eliminar
+        const res = await fetch(API_BASE_URL + '/api/products/' + id, { // DELETE al endpoint del producto
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        })
+        if (res.ok) fetchProducts() // Si fue correcto, recarga lista
+        return // Termina flujo de delete
+      }
+      if (action === 'in' || action === 'out') { // Acciones de entrada/salida
+        const qtyStr = prompt(`Cantidad para ${action === 'in' ? 'entrada' : 'salida'}:`) // Pide cantidad
+        const qty = Number(qtyStr) // Convierte a número
+        if (!qtyStr || !Number.isFinite(qty) || qty <= 0) return // Valida número positivo
+        if (action === 'out') { // Si es salida
+          const row = btn.closest('tr') // Fila asociada
+          const currentStock = Number(row?.dataset.stock ?? 0) // Stock actual desde dataset
+          if (qty > currentStock) { // Si la salida excede el stock
+            alert('No puedes dejar el inventario en negativo') // Mensaje de aviso
+            return // Cancela operación
+          }
+        }
+        const res = await fetch(API_BASE_URL + '/api/products/' + id + '/movements', { // Endpoint de movimientos
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', // Body en JSON
+            'Authorization': 'Bearer ' + token // Token de autenticación
+          },
+          body: JSON.stringify({ type: action, quantity: qty }) // Tipo y cantidad de movimiento
+        })
+        if (res.ok) { // Si el backend aceptó el movimiento
+          fetchProducts() // Actualiza tabla
+        } else {
+          const j = await res.json().catch(() => ({})) // Intenta leer respuesta de error
+          alert(j.error === 'insufficient_stock' ? 'Stock insuficiente' : 'No se pudo registrar el movimiento') // Mensaje según error
+        }
+      }
+    })
+    document.getElementById('logout').addEventListener('click', () => { // Maneja clic en "Cerrar sesión"
+      localStorage.removeItem('token') // Elimina token guardado
+      window.location.href = 'login.html' // Redirige a página de login
+    })
+    document.addEventListener('DOMContentLoaded', () => { // Cuando el DOM esté listo
+      ensureAuth() // Verifica que haya sesión válida
+      fetchProducts() // Carga listado inicial
+    })
+  </script>
+</body>
+</html>
